@@ -17,6 +17,8 @@ PrepPilot is a high-performance, centralized tracking platform and ledger design
 *   **Data Serialization:** JSON integration for seamless request/response payloads
 *   **Default Port:** `8080`
 
+## Project Structure
+
 ```text
 ├── backend/
 │   ├── httplib.h              # Single-header multi-threaded HTTP library
