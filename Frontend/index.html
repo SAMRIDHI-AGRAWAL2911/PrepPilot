@@ -1,328 +1,567 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrepPilot Operational panel</title>
+    <title>PrepPilot Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .star-rating svg {
+            cursor: pointer;
+            transition: color 150ms ease-in-out;
+        }
+    </style>
 </head>
+
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
 
-    <nav class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-extrabold tracking-tight text-white">PrepPilot ✈️</h1>
-        <div class="space-x-4">
-            <button onclick="showPage('dashboard-page')" class="px-4 py-2 rounded-md hover:bg-slate-700 transition">Dashboard</button>
-            <button onclick="showPage('log-page')" class="px-4 py-2 rounded-md hover:bg-slate-700 transition">Log Problem</button>
-        </div>
-    </nav>
-
-    <main class="p-6 max-w-7xl mx-auto">
-
-        <section id="dashboard-page" class="space-y-8">
-            <div>
-                <h2 class="text-3xl font-bold text-white">Command Dashboard Dashboard</h2>
-                <p class="text-slate-400 mt-1">Real-time analytical indicators mapping problem statistics[cite: 513].</p>
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 p-8 rounded-xl w-full max-w-md shadow-2xl space-y-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-black text-white tracking-tight">PrepPilot ✈️</h1>
+                <p class="text-slate-400 text-sm mt-1">Command your coding interview preparation track[cite: 4].</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Stored [cite: 452]</p>
-                    <p id="stat-total" class="text-3xl font-black mt-1 text-white">0</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Easy Count [cite: 453]</p>
-                    <p id="stat-easy" class="text-3xl font-black mt-1 text-emerald-400">0</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Medium Count [cite: 454]</p>
-                    <p id="stat-medium" class="text-3xl font-black mt-1 text-amber-400">0</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hard Count </p>
-                    <p id="stat-hard" class="text-3xl font-black mt-1 text-rose-500">0</p>
-                </div>
-                <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg Confidence [cite: 511]</p>
-                    <p id="stat-confidence" class="text-2xl font-black mt-2 text-blue-400">0.0 / 5</p>
-                </div>
-            </div>
-
-            <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg p-6 space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-700 pb-4">
-                    <h3 class="text-lg font-bold text-slate-200">Centralized Problem Registry</h3>
-                    
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <input type="text" id="search-bar" oninput="applyFilters()" placeholder="Search problem title... [cite: 469]" 
-                            class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-48">
-                        
-                        <select id="filter-difficulty" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-300">
-                            <option value="All">All Difficulties [cite: 470]</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-
-                        <select id="sort-order" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-300">
-                            <option value="Newest">Newest Added [cite: 471]</option>
-                            <option value="Alphabetical">Alphabetical</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
-                                <th class="pb-3 pl-2">Name [cite: 463]</th>
-                                <th class="pb-3">Platform(s) [cite: 467]</th>
-                                <th class="pb-3">Difficulty [cite: 464]</th>
-                                <th class="pb-3">Topic [cite: 465]</th>
-                                <th class="pb-3">Pattern [cite: 466]</th>
-                                <th class="pb-3">Status [cite: 468]</th>
-                                <th class="pb-3 text-right pr-2">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="problems-table-body" class="divide-y divide-slate-700/50 text-sm text-slate-300">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section id="log-page" class="hidden max-w-2xl mx-auto">
-            <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-xl space-y-4">
-                <h2 class="text-xl font-bold text-white tracking-tight border-b border-slate-700 pb-2">Record Structural Placement Metrics [cite: 473]</h2>
-                
-                <form id="problem-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Problem Label [cite: 476]</label>
-                        <input type="text" id="form-name" required placeholder="e.g., Two Sum" 
-                            class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div id="login-box" class="space-y-4">
+                <h3 class="text-lg font-bold text-slate-200">Account Login [cite: 79]</h3>
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Email [cite:
+                            80]</label>
+                        <input type="email" id="login-email" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Execution Platform [cite: 480]</label>
-                        <select id="form-platform" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                            <option>LeetCode</option>
-                            <option>GFG</option>
-                            <option>Codeforces</option>
-                            <option>CodeStudio</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Difficulty Metric [cite: 477]</label>
-                        <select id="form-difficulty" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
-                        </select>
-                    </div>
+                        <label
+                            class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Password</label>
+                        <div class="relative">
+                            <!-- Changed to type="password" to keep it starred by default -->
+                            <input type="password" id="login-password" autocomplete="current-password" required
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 pr-10 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
 
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Core Topic [cite: 478]</label>
-                        <input type="text" id="form-topic" required placeholder="e.g., Arrays" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
+                            <!-- Toggle Action Button Icon -->
+                            <button type="button" onclick="togglePasswordVisibility()"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-slate-400 hover:text-slate-200 focus:outline-none">
+                                <span id="password-toggle-text">👁️</span>
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Structural Pattern [cite: 479]</label>
-                        <input type="text" id="form-pattern" required placeholder="e.g., Two Pointers" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time Complexity [cite: 501]</label>
-                        <input type="text" id="form-time-comp" required placeholder="e.g., O(N)" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Space Complexity [cite: 502]</label>
-                        <input type="text" id="form-space-comp" required placeholder="e.g., O(1)" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Confidence Scale (1-5) [cite: 484]</label>
-                        <input type="number" id="form-confidence" min="1" max="5" value="3" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time Taken (Mins) [cite: 485]</label>
-                        <input type="number" id="form-time" required placeholder="e.g., 20" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Resource Reference Link [cite: 481]</label>
-                        <input type="url" id="form-link" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100">
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Mental Blueprint Notes [cite: 483]</label>
-                        <textarea id="form-notes" placeholder="Notes..." class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 h-20"></textarea>
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Corner Case Mistakes Encountered [cite: 500]</label>
-                        <textarea id="form-mistakes" placeholder="Mistakes..." class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 h-20"></textarea>
-                    </div>
-
-                    <div class="md:col-span-2 mt-2">
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 text-white rounded shadow transition">
-                            Commit Entry to C++ Storage Matrix
-                        </button>
-                    </div>
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-2.5 rounded text-white transition shadow-md">Authenticate
+                        Portal</button>
                 </form>
+                <p class="text-xs text-center text-slate-400">New pilot? <button onclick="toggleAuthView(false)"
+                        class="text-blue-400 hover:underline">Create an account [cite: 84]</button></p>
             </div>
-        </section>
 
-        <div id="details-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-2xl p-6 relative shadow-2xl space-y-6">
-                <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
-                
-                <div class="border-b border-slate-700 pb-3">
-                    <span id="modal-difficulty" class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider"></span>
-                    <h2 id="modal-name" class="text-2xl font-black text-white mt-1"></h2>
-                    <p id="modal-meta" class="text-xs text-slate-400 mt-1"></p>
+            <div id="register-box" class="hidden space-y-4">
+                <h3 class="text-lg font-bold text-slate-200">Register Pilot Credentials [cite: 84]</h3>
+                <form id="register-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Full Name
+                            [cite: 85]</label>
+                        <input type="text" id="reg-name" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Email
+                            Address [cite: 86]</label>
+                        <input type="email" id="reg-email" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Password
+                            [cite: 87]</label>
+                        <input type="password" id="reg-password" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:outline-none">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2.5 rounded text-white transition shadow-md">Create
+                        Ledger Mapping</button>
+                </form>
+                <p class="text-xs text-center text-slate-400">Already registered? <button onclick="toggleAuthView(true)"
+                        class="text-blue-400 hover:underline">Login here</button></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <nav class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">PrepPilot <span
+                    id="user-greeting" class="text-sm font-normal text-slate-400"></span></h1>
+            <div class="flex items-center space-x-4">
+                <button onclick="showPage('dashboard-page')"
+                    class="px-3 py-1.5 text-sm rounded-md hover:bg-slate-700 transition">Dashboard</button>
+                <button onclick="showPage('log-page')"
+                    class="px-3 py-1.5 text-sm rounded-md hover:bg-slate-700 transition">Log Progress</button>
+                <button onclick="handleLogout()"
+                    class="px-3 py-1.5 text-sm bg-rose-950 text-rose-300 border border-rose-800 rounded-md hover:bg-rose-900 transition">Logout
+                    [cite: 53, 448]</button>
+            </div>
+        </nav>
+
+        <main class="p-6 max-w-7xl mx-auto">
+            <section id="dashboard-page" class="space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">System Telemetry Dashboard</h2>
+                    <p class="text-slate-400 mt-1">Real-time indicators tracking preparation across platforms.</p>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700/60">
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Time Complexity [cite: 501]</p>
-                        <p id="modal-time-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Solved [cite:
+                            452]</p>
+                        <p id="stat-total" class="text-3xl font-black mt-1 text-white">0</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Space Complexity [cite: 502]</p>
-                        <p id="modal-space-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Easy Count [cite: 453]
+                        </p>
+                        <p id="stat-easy" class="text-3xl font-black mt-1 text-emerald-400">0</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Confidence Scale [cite: 503]</p>
-                        <p id="modal-confidence" class="text-sm font-bold text-slate-200 mt-0.5"></p>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Medium Count [cite:
+                            454]</p>
+                        <p id="stat-medium" class="text-3xl font-black mt-1 text-amber-400">0</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Resource Link [cite: 498]</p>
-                        <a id="modal-link" target="_blank" class="text-sm text-blue-400 hover:underline block mt-0.5">Visit Problem &rarr;</a>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hard Count [cite: 455]
+                        </p>
+                        <p id="stat-hard" class="text-3xl font-black mt-1 text-rose-500">0</p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg Confidence [cite:
+                            511]</p>
+                        <div id="stat-confidence-stars" class="flex items-center text-amber-400 mt-2 space-x-0.5"></div>
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Conceptual Realization Notes [cite: 499]</h4>
-                        <div id="modal-notes" class="bg-slate-900/40 p-3 rounded border border-slate-700/40 text-sm text-slate-300 whitespace-pre-wrap"></div>
+                <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-200">Centralized Problem Registry [cite: 462]</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                                    <th class="pb-3 pl-2">Problem Target [cite: 463]</th>
+                                    <th class="pb-3">Platform(s) [cite: 467]</th>
+                                    <th class="pb-3">Difficulty [cite: 464]</th>
+                                    <th class="pb-3">Topic [cite: 465]</th>
+                                    <th class="pb-3">Pattern [cite: 466]</th>
+                                    <th class="pb-3 text-right pr-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="problems-table-body" class="divide-y divide-slate-700/50 text-sm text-slate-300">
+                            </tbody>
+                        </table>
                     </div>
-                    <div>
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-rose-400 mb-1">Identified Corner Mistakes & Pitfalls [cite: 500]</h4>
-                        <div id="modal-mistakes" class="bg-rose-950/10 p-3 rounded border border-rose-900/30 text-sm text-rose-200 whitespace-pre-wrap"></div>
+                </div>
+            </section>
+
+            <section id="log-page" class="hidden max-w-2xl mx-auto">
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-xl space-y-4 relative">
+                    <h2 class="text-xl font-bold text-white tracking-tight border-b border-slate-700 pb-2">Record
+                        Dynamic Progress Matrix [cite: 473]</h2>
+                    <form id="problem-form" class="grid grid-cols-1 md:grid-cols-2 gap-4" autocomplete="off">
+
+                        <div class="md:col-span-2 relative">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Problem
+                                Label [cite: 476]</label>
+                            <input type="text" id="form-name" required
+                                placeholder="Start typing title (e.g., Two Sum)..."
+                                oninput="handleSearchSuggestions(this.value)"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <div id="suggestion-box"
+                                class="hidden absolute left-0 right-0 mt-1 bg-slate-950 border border-slate-700 rounded shadow-2xl z-50 max-h-48 overflow-y-auto">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Execution
+                                Platform [cite: 480]</label>
+                            <select id="form-platform"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:outline-none">
+                                <option>LeetCode</option>
+                                <option>GeeksForGeeks</option>
+                                <option>NeetCode</option>
+                                <option>Codeforces</option>
+                                <option>CodeStudio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Difficulty
+                                Metric [cite: 477]</label>
+                            <select id="form-difficulty"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                                <option>Easy</option>
+                                <option>Medium</option>
+                                <option>Hard</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Core
+                                Topic [cite: 478]</label>
+                            <input type="text" id="form-topic" required placeholder="e.g., Arrays"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Structural
+                                Pattern [cite: 479]</label>
+                            <input type="text" id="form-pattern" required placeholder="e.g., Two Pointers"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time
+                                Complexity</label>
+                            <select id="form-time-comp-select" onchange="toggleCustomComplexity('time')"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock"></select>
+                            <input type="text" id="form-time-comp-custom" placeholder="Type custom complexity..."
+                                class="hidden mt-2 w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Space
+                                Complexity</label>
+                            <select id="form-space-comp-select" onchange="toggleCustomComplexity('space')"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock"></select>
+                            <input type="text" id="form-space-comp-custom" placeholder="Type custom complexity..."
+                                class="hidden mt-2 w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100">
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Confidence
+                                Scale [cite: 484]</label>
+                            <div class="star-rating flex items-center space-x-1 text-slate-500"
+                                id="form-star-container">
+                                <span onclick="setFormStars(1)">★</span>
+                                <span onclick="setFormStars(2)">★</span>
+                                <span onclick="setFormStars(3)">★</span>
+                                <span onclick="setFormStars(4)">★</span>
+                                <span onclick="setFormStars(5)">★</span>
+                            </div>
+                            <input type="hidden" id="form-confidence" value="3">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time
+                                Taken (Mins) [cite: 485]</label>
+                            <input type="number" id="form-time" required placeholder="e.g., 25"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Resource
+                                Reference Link [cite: 481]</label>
+                            <input type="url" id="form-link" placeholder="https://..."
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label
+                                class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Incremental
+                                Insight Notes [cite: 483]</label>
+                            <textarea id="form-notes" placeholder="Add specific platform feedback notes..."
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 h-20 focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2 mt-2">
+                            <button type="submit"
+                                class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 text-white rounded shadow transition">Commit
+                                Entry to C++ Storage</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="details-modal"
+        class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-2xl p-6 relative shadow-2xl space-y-5">
+            <button onclick="closeModal()"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            <div class="border-b border-slate-700 pb-3">
+                <span id="modal-difficulty"
+                    class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"></span>
+                <h2 id="modal-name" class="text-2xl font-black text-white mt-1">[cite: 494]</h2>
+                <p id="modal-meta" class="text-xs text-slate-400 mt-1"></p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700/60">
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Time Complexity [cite:
+                        501]</p>
+                    <p id="modal-time-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Space Complexity
+                        [cite: 502]</p>
+                    <p id="modal-space-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Confidence Scale
+                        [cite: 503]</p>
+                    <div id="modal-confidence-stars" class="text-amber-400 flex items-center space-x-0.5 mt-0.5"></div>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Source Anchor Link</p>
+                    <a id="modal-link" target="_blank" class="text-sm text-blue-400 hover:underline block mt-0.5">Link
+                        &rarr;</a>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Accumulated Insight Notes
+                        [cite: 499]</h4>
+                    <div id="modal-notes"
+                        class="bg-slate-900/40 p-3 rounded border border-slate-700/40 text-sm text-slate-300 whitespace-pre-wrap font-mono text-xs">
                     </div>
                 </div>
             </div>
         </div>
-
-    </main>
+    </div>
 
     <script>
         const BACKEND_URL = 'http://localhost:8080';
-        let localCacheProblems = [];
+        let problemsCacheList = [];
+        let timeComplexityOptions = ["O(1)", "O(log N)", "O(N)", "O(N log N)", "O(N^2)", "O(2^N)", "O(N!)"];
+        let spaceComplexityOptions = ["O(1)", "O(log N)", "O(N)", "O(N^2)"];
+
+        // MODULE 1: Auth Controller State Engine Toggles 
+        function checkPortalAuthentication() {
+            const token = localStorage.getItem('preppilot_token');
+            const name = localStorage.getItem('preppilot_username');
+            if (token) {
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                document.getElementById('user-greeting').innerText = `| Pilot: ${name}`; // [cite: 96]
+                showPage('dashboard-page');
+            } else {
+                document.getElementById('auth-container').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+        }
+
+        function toggleAuthView(showLogin) {
+            document.getElementById('login-box').classList.toggle('hidden', !showLogin);
+            document.getElementById('register-box').classList.toggle('hidden', showLogin);
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${BACKEND_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: document.getElementById('login-email').value,
+                    password: document.getElementById('login-password').value
+                })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('preppilot_token', data.token); // [cite: 449]
+                localStorage.setItem('preppilot_username', data.name);
+                checkPortalAuthentication();
+            }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${BACKEND_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('reg-name').value,
+                    email: document.getElementById('reg-email').value,
+                    password: document.getElementById('reg-password').value
+                })
+            });
+            if (res.ok) { alert('Account created! Please login.'); toggleAuthView(true); }
+        });
+
+        function handleLogout() {
+            // 1. Flush the authentication token state
+            localStorage.clear();
+
+            // 2. Explicitly wipe the text values out of the authentication input boxes
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+
+            // Also wipe the registration fields just in case
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+
+            // 3. Re-run routing verification to drop view back to login screen
+            checkPortalAuthentication();
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('login-password');
+            const toggleText = document.getElementById('password-toggle-text');
+
+            // Check current state type configuration
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; // Unmasks the text string
+                toggleText.innerText = '🙈'; // Changes icon indicator to hide state
+            } else {
+                passwordInput.type = 'password'; // Masks it back to standard starred format
+                toggleText.innerText = '👁️'; // Reverts to show icon indicator
+            }
+        }
+
+        // STAR INTERFACE COMPONENT ENGINE LOOPS
+        function getStarString(rating) {
+            let stars = '';
+            const roundRating = Math.round(rating);
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= roundRating ? '★' : '☆';
+            }
+            return stars;
+        }
+
+        function setFormStars(rating) {
+            document.getElementById('form-confidence').value = rating;
+            const elements = document.getElementById('form-star-container').children;
+            for (let i = 0; i < 5; i++) {
+                if (i < rating) {
+                    elements[i].className = "text-xl text-amber-400";
+                } else {
+                    elements[i].className = "text-xl text-slate-600";
+                }
+            }
+        }
 
         function showPage(pageId) {
             document.getElementById('dashboard-page').classList.add('hidden');
             document.getElementById('log-page').classList.add('hidden');
             document.getElementById(pageId).classList.remove('hidden');
-            
-            if (pageId === 'dashboard-page') {
-                fetchStats();
-                fetchProblems();
-            }
+            if (pageId === 'dashboard-page') { fetchStats(); fetchProblems(); }
+            if (pageId === 'log-page') { resetLoggingFormState(); }
         }
 
         async function fetchStats() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/stats`);
-                const data = await response.json();
-                document.getElementById('stat-total').innerText = data.total_solved;
-                document.getElementById('stat-easy').innerText = data.easy;
-                document.getElementById('stat-medium').innerText = data.medium;
-                document.getElementById('stat-hard').innerText = data.hard; // Binds Hard data interface element
-                document.getElementById('stat-confidence').innerText = `${data.avg_confidence.toFixed(1)} / 5`;
-            } catch (err) { console.error('Stats engine sync trace failure:', err); }
+            const res = await fetch(`${BACKEND_URL}/stats`);
+            const data = await res.json();
+            document.getElementById('stat-total').innerText = data.total_solved;
+            document.getElementById('stat-easy').innerText = data.easy;
+            document.getElementById('stat-medium').innerText = data.medium;
+            document.getElementById('stat-hard').innerText = data.hard;
+            document.getElementById('stat-confidence-stars').innerText = getStarString(data.avg_confidence);
         }
 
         async function fetchProblems() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/problems`);
-                localCacheProblems = await response.json();
-                applyFilters();
-            } catch (err) { console.error('Ledger pull down dropped:', err); }
-        }
-
-        function applyFilters() {
-            const searchQuery = document.getElementById('search-bar').value.toLowerCase();
-            const difficultyFilter = document.getElementById('filter-difficulty').value;
-            const sortingOrder = document.getElementById('sort-order').value;
-
-            let records = [...localCacheProblems];
-
-            if (searchQuery) {
-                records = records.filter(p => p.name.toLowerCase().includes(searchQuery));
-            }
-            if (difficultyFilter !== 'All') {
-                records = records.filter(p => p.difficulty === difficultyFilter);
-            }
-            if (sortingOrder === 'Alphabetical') {
-                records.sort((a, b) => a.name.localeCompare(b.name));
-            } else {
-                records.sort((a, b) => b.id - a.id);
-            }
-
-            renderTable(records);
-        }
-
-        function renderTable(problems) {
+            const res = await fetch(`${BACKEND_URL}/problems`);
+            problemsCacheList = await res.json();
             const tbody = document.getElementById('problems-table-body');
             tbody.innerHTML = '';
 
-            problems.forEach(prob => {
+            problemsCacheList.forEach(prob => {
                 const row = document.createElement('tr');
                 row.className = 'border-b border-slate-700/40 hover:bg-slate-700/20 transition';
+                const platforms = prob.platform ? `<span class="bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-xs font-mono text-slate-300">${prob.platform}</span>` : `<span class="text-slate-500 italic text-xs">Unsolved</span>`;
+
                 row.innerHTML = `
-                    <td class="py-3 pl-2 font-medium text-white">${prob.name}</td>
-                    <td class="py-3 text-slate-300 font-mono text-xs"><span class="bg-slate-900 border border-slate-700 px-2 py-0.5 rounded">${prob.platform}</span></td>
-                    <td class="py-3 font-semibold text-xs ${getDifficultyColor(prob.difficulty)}">${prob.difficulty}</td>
-                    <td class="py-3 text-xs"><span class="bg-slate-950 px-2 py-0.5 rounded text-slate-400">${prob.topic}</span></td>
-                    <td class="py-3 text-slate-400 text-xs">${prob.pattern}</td>
-                    <td class="py-3 text-xs text-emerald-400 font-medium">${prob.status}</td>
-                    <td class="py-3 text-right pr-2">
-                        <button onclick="openDetails(${prob.id})" class="bg-slate-700 hover:bg-blue-600 hover:text-white px-2.5 py-1 rounded text-xs text-slate-200 transition">
-                            Inspect &rarr; [cite: 490]
-                        </button>
+                    <td class="py-3.5 pl-2 font-bold text-white">${prob.name}</td>
+                    <td class="py-3.5">${platforms}</td>
+                    <td class="py-3.5 font-semibold text-xs ${prob.difficulty === 'Easy' ? 'text-emerald-400' : prob.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400'}">${prob.difficulty}</td>
+                    <td class="py-3.5 text-xs text-slate-400"><span class="bg-slate-950 px-2 py-0.5 rounded">${prob.topic}</span></td>
+                    <td class="py-3.5 text-xs text-slate-400">${prob.pattern}</td>
+                    <td class="py-3.5 text-right pr-2">
+                        <button onclick="viewDetailsModal(${prob.id})" class="bg-slate-700 hover:bg-blue-600 px-2.5 py-1 rounded text-xs text-slate-200 transition">Inspect &rarr;</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        function getDifficultyColor(diff) {
-            if (diff === 'Easy') return 'text-emerald-400';
-            if (diff === 'Medium') return 'text-amber-400';
-            return 'text-rose-400';
+        function handleSearchSuggestions(val) {
+            const box = document.getElementById('suggestion-box');
+            if (!val) { box.innerHTML = ''; box.classList.add('hidden'); return; }
+            const matches = problemsCacheList.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+            if (matches.length === 0) { box.innerHTML = ''; box.classList.add('hidden'); unlockFormFields(); return; }
+            box.innerHTML = ''; box.classList.remove('hidden');
+
+            matches.forEach(match => {
+                const item = document.createElement('div');
+                item.className = 'px-4 py-2 hover:bg-slate-800 cursor-pointer text-sm text-white flex justify-between';
+                item.innerHTML = `<span>${match.name}</span><span class="text-xs text-slate-500 uppercase">${match.topic}</span>`;
+                item.onclick = () => selectAutocompleteSuggestion(match);
+                box.appendChild(item);
+            });
         }
 
-        function openDetails(id) {
-            const problem = localCacheProblems.find(p => p.id === id);
-            if (!problem) return;
+        function selectAutocompleteSuggestion(problem) {
+            document.getElementById('form-name').value = problem.name;
+            document.getElementById('suggestion-box').classList.add('hidden');
+            document.getElementById('form-difficulty').value = problem.difficulty;
+            document.getElementById('form-topic').value = problem.topic;
+            document.getElementById('form-pattern').value = problem.pattern;
+            document.getElementById('form-link').value = problem.link;
+            syncComplexityDropdownState('time', problem.time_comp);
+            syncComplexityDropdownState('space', problem.space_comp);
+            document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = true);
+        }
 
+        function unlockFormFields() { document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = false); }
+
+        function populateDropdownOptions(type, optionsArray, activeValue = "") {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            select.innerHTML = '';
+            optionsArray.forEach(opt => {
+                const el = document.createElement('option'); el.value = opt; el.innerText = opt; select.appendChild(el);
+            });
+            const otherOpt = document.createElement('option'); otherOpt.value = "Other"; otherOpt.innerText = "Other..."; select.appendChild(otherOpt);
+            if (activeValue) {
+                if (optionsArray.includes(activeValue)) { select.value = activeValue; }
+                else { select.value = "Other"; const customInput = document.getElementById(`form-${type}-comp-custom`); customInput.classList.remove('hidden'); customInput.value = activeValue; }
+            }
+        }
+
+        function syncComplexityDropdownState(type, value) {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            const customInput = document.getElementById(`form-${type}-comp-custom`);
+            const optionsArray = type === 'time' ? timeComplexityOptions : spaceComplexityOptions;
+            if (!value) { select.value = optionsArray[0]; customInput.classList.add('hidden'); return; }
+            populateDropdownOptions(type, optionsArray, value);
+        }
+
+        function toggleCustomComplexity(type) {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            const customInput = document.getElementById(`form-${type}-comp-custom`);
+            if (select.value === 'Other') { customInput.classList.remove('hidden'); customInput.required = true; }
+            else { customInput.classList.add('hidden'); customInput.required = false; }
+        }
+
+        function resetLoggingFormState() {
+            document.getElementById('problem-form').reset();
+            unlockFormFields();
+            setFormStars(3);
+            document.getElementById('form-time-comp-custom').classList.add('hidden');
+            document.getElementById('form-space-comp-custom').classList.add('hidden');
+            populateDropdownOptions('time', timeComplexityOptions);
+            populateDropdownOptions('space', spaceComplexityOptions);
+        }
+
+        function viewDetailsModal(id) {
+            const problem = problemsCacheList.find(p => p.id === id);
+            if (!problem) return;
             const badge = document.getElementById('modal-difficulty');
             badge.innerText = problem.difficulty;
-            badge.className = `px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                problem.difficulty === 'Easy' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
-                problem.difficulty === 'Medium' ? 'bg-amber-950 text-amber-400 border border-amber-800' : 'bg-rose-950 text-rose-400 border border-rose-800'
-            }`;
+            badge.className = `px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${problem.difficulty === 'Easy' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : problem.difficulty === 'Medium' ? 'bg-amber-950 text-amber-400 border border-amber-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}`;
 
             document.getElementById('modal-name').innerText = problem.name;
-            document.getElementById('modal-meta').innerText = `Platform(s): ${problem.platform} | Topic: ${problem.topic} | Pattern: ${problem.pattern}`;
-            document.getElementById('modal-time-comp').innerText = problem.time_comp || 'Not Tracked';
-            document.getElementById('modal-space-comp').innerText = problem.space_comp || 'Not Tracked';
-            document.getElementById('modal-confidence').innerText = `${problem.confidence} / 5`;
-            
+            document.getElementById('modal-meta').innerText = `Completed Platforms: ${problem.platform || 'None'} | Topic: ${problem.topic} | Pattern: ${problem.pattern}`;
+            document.getElementById('modal-time-comp').innerText = problem.time_comp || 'O(N)';
+            document.getElementById('modal-space-comp').innerText = problem.space_comp || 'O(1)';
+            document.getElementById('modal-confidence-stars').innerText = getStarString(problem.confidence);
+
             const linkTag = document.getElementById('modal-link');
             if (problem.link) { linkTag.href = problem.link; linkTag.style.display = 'block'; } else { linkTag.style.display = 'none'; }
-
-            document.getElementById('modal-notes').innerText = problem.notes || 'No review insights tracked.';
-            document.getElementById('modal-mistakes').innerText = problem.mistakes || 'No logic tracking mistakes recorded.';
-
+            document.getElementById('modal-notes').innerText = problem.notes || 'No notes tracked.';
             document.getElementById('details-modal').classList.remove('hidden');
         }
 
@@ -330,6 +569,16 @@
 
         document.getElementById('problem-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            let timeCompVal = document.getElementById('form-time-comp-select').value;
+            if (timeCompVal === 'Other') {
+                timeCompVal = document.getElementById('form-time-comp-custom').value;
+                if (!timeComplexityOptions.includes(timeCompVal)) timeComplexityOptions.push(timeCompVal);
+            }
+            let spaceCompVal = document.getElementById('form-space-comp-select').value;
+            if (spaceCompVal === 'Other') {
+                spaceCompVal = document.getElementById('form-space-comp-custom').value;
+                if (!spaceComplexityOptions.includes(spaceCompVal)) spaceComplexityOptions.push(spaceCompVal);
+            }
 
             const payload = {
                 name: document.getElementById('form-name').value,
@@ -337,33 +586,26 @@
                 difficulty: document.getElementById('form-difficulty').value,
                 topic: document.getElementById('form-topic').value,
                 pattern: document.getElementById('form-pattern').value,
-                time_comp: document.getElementById('form-time-comp').value,
-                space_comp: document.getElementById('form-space-comp').value,
+                time_comp: timeCompVal,
+                space_comp: spaceCompVal,
                 confidence: document.getElementById('form-confidence').value,
                 time_taken: document.getElementById('form-time').value,
                 link: document.getElementById('form-link').value,
-                notes: document.getElementById('form-notes').value,
-                mistakes: document.getElementById('form-mistakes').value,
-                status: "Solved"
+                notes: document.getElementById('form-notes').value
             };
 
-            try {
-                const response = await fetch(`${BACKEND_URL}/problems`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    alert('Log ledger entry processed successfully!');
-                    document.getElementById('problem-form').reset();
-                    showPage('dashboard-page');
-                }
-            } catch (err) { console.error('POST pipeline disconnect error:', err); }
+            document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = false);
+            const response = await fetch(`${BACKEND_URL}/problems`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) { alert('Progress successfully tracked!'); showPage('dashboard-page'); }
         });
 
-        fetchStats();
-        fetchProblems();
+        // Initialize portal check on page render
+        checkPortalAuthentication();
     </script>
 </body>
+
 </html>
