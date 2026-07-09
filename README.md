@@ -1,4 +1,4 @@
-# PrepPilot: The DSA Hub 🚀
+# PrepPilot: The DSA Hub
 
 PrepPilot is a high-performance, centralized tracking platform and ledger designed to streamline and monitor Data Structures and Algorithms (DSA) interview preparation. Instead of scattering progress across multiple coding platforms, PrepPilot aggregates your solved problems, monitors difficulty distributions, tracks performance analytics, and pinpoints algorithmic bottlenecks to optimize your technical interview study strategy.
 
@@ -17,13 +17,15 @@ PrepPilot is a high-performance, centralized tracking platform and ledger design
 *   **Data Serialization:** JSON integration for seamless request/response payloads
 *   **Default Port:** `8080`
 
-## Project Structure
-
 ```text
-├── src/
-│   ├── main.cpp          # Application entry point & server initialization
-│   ├── server.hpp        # HTTP routing and httplib setup
-│   ├── handlers/         # Request handling logic (CRUD operations)
-│   └── models/           # Problem, Pattern, and Analytics data structures
-├── include/              # External header-only libraries (e.g., httplib.h)
+├── backend/
+│   ├── httplib.h              # Single-header multi-threaded HTTP library
+│   ├── main.cpp               # Server entry point, routing, and logic
+│   ├── models.hpp             # DSA problem structures and analytics data models
+│   ├── models.exe             # Compiled binary artifact
+│   └── preppilot_backend.exe  # Main backend engine executable
+│
+├── Frontend/
+│   └── index.html             # Client-facing analytics dashboard UI
+│
 └── README.md
