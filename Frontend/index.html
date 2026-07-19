@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrepPilot Workspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .star-rating svg { cursor: pointer; transition: color 150ms ease-in-out; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+    <!-- IN-WEBSITE NOTIFICATION TOAST MODULE -->
+    <div id="toast-notification" class="hidden fixed top-5 right-5 z-50 transform transition-all duration-300 translate-y-[-20px] opacity-0 max-w-sm w-full bg-slate-800 border p-4 rounded-xl shadow-2xl flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+            <span id="toast-icon" class="text-xl"></span>
+            <p id="toast-message" class="text-sm font-semibold text-slate-200"></p>
+        </div>
+        <button onclick="dismissToast()" class="text-slate-400 hover:text-white font-bold text-lg focus:outline-none">&times;</button>
+    </div>
+
+    <!-- MODULE 1: AUTHENTICATION PORTAL OVERLAY CONTAINER -->
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 p-8 rounded-xl w-full max-w-md shadow-2xl space-y-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-black text-white tracking-tight">PrepPilot ✈️</h1>
+                <p class="text-slate-400 text-sm mt-1">Command your coding interview preparation track.</p>
+            </div>
+
+            <!-- SIDE-BY-SIDE TAB ARCHITECTURE TOGGLE CAPABILITIES -->
+            <div class="flex border-b border-slate-700">
+                <button id="tab-login" onclick="toggleAuthTab(true)" class="w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-blue-500 text-white transition focus:outline-none">
+                    Login
+                </button>
+                <button id="tab-register" onclick="toggleAuthTab(false)" class="w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition focus:outline-none">
+                    Sign In (Register)
+                </button>
+            </div>
+
+            <!-- RUNTIME NOTIFICATION ERROR BANNER VIEW -->
+            <div id="auth-error" class="hidden bg-rose-950/40 border border-rose-800 text-rose-200 text-xs p-3 rounded-md"></div>
+
+            <!-- TAB CONTAINER A: REGULAR LOGIN OPERATION VIEW -->
+            <div id="login-box" class="space-y-4">
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Email</label>
+                        <input type="email" id="login-email" autocomplete="off" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" autocomplete="current-password" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 pr-10 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', 'password-toggle-text-1')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-slate-400 hover:text-slate-200 focus:outline-none">
+                                <span id="password-toggle-text-1">👁️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-2.5 rounded text-white transition shadow-md">Authenticate Portal</button>
+                </form>
+            </div>
+
+            <!-- TAB CONTAINER B: SIGN IN (REGISTER) OPERATION VIEW -->
+            <div id="register-box" class="hidden space-y-4">
+                <form id="register-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Email Address</label>
+                        <input type="email" id="reg-email" autocomplete="off" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" autocomplete="new-password" required class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 pr-10 text-white focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility('reg-password', 'password-toggle-text-2')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-slate-400 hover:text-slate-200 focus:outline-none">
+                                <span id="password-toggle-text-2">👁️</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2.5 rounded text-white transition shadow-md">Create Ledger Mapping</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD APPLICATION WINDOW -->
+    <div id="app-container" class="hidden">
+        <nav class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">PrepPilot <span id="user-greeting" class="text-sm font-normal text-slate-400"></span></h1>
+            <div class="flex items-center space-x-4">
+                <button onclick="showPage('dashboard-page')" class="px-3 py-1.5 text-sm rounded-md hover:bg-slate-700 transition">Dashboard</button>
+                <button onclick="showPage('log-page')" class="px-3 py-1.5 text-sm rounded-md hover:bg-slate-700 transition">Log Progress</button>
+                <button onclick="handleLogout()" class="px-3 py-1.5 text-sm bg-rose-950 text-rose-300 border border-rose-800 rounded-md hover:bg-rose-900 transition">Logout</button>
+            </div>
+        </nav>
+
+        <main class="p-6 max-w-7xl mx-auto">
+            <!-- DASHBOARD GRAPH VIEW -->
+            <section id="dashboard-page" class="space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-white">System Telemetry Dashboard</h2>
+                    <p class="text-slate-400 mt-1">Real-time indicators tracking preparation across platforms.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Solved</p>
+                        <p id="stat-total" class="text-3xl font-black mt-1 text-white">0</p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Easy Count</p>
+                        <p id="stat-easy" class="text-3xl font-black mt-1 text-emerald-400">0</p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Medium Count</p>
+                        <p id="stat-medium" class="text-3xl font-black mt-1 text-amber-400">0</p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hard Count</p>
+                        <p id="stat-hard" class="text-3xl font-black mt-1 text-rose-500">0</p>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl shadow-md">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Avg Confidence</p>
+                        <div id="stat-confidence-stars" class="flex items-center text-amber-400 mt-2 space-x-0.5"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-200">Centralized Problem Registry</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700">
+                                    <th class="pb-3 pl-2">Problem Target</th>
+                                    <th class="pb-3">Platform(s)</th>
+                                    <th class="pb-3">Difficulty</th>
+                                    <th class="pb-3">Topic</th>
+                                    <th class="pb-3">Pattern</th>
+                                    <th class="pb-3 text-right pr-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="problems-table-body" class="divide-y divide-slate-700/50 text-sm text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROGRESS LOGGER PANELS -->
+            <section id="log-page" class="hidden max-w-2xl mx-auto">
+                <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl shadow-xl space-y-4 relative">
+                    <h2 class="text-xl font-bold text-white tracking-tight border-b border-slate-700 pb-2">Record Dynamic Progress Matrix</h2>
+                    <form id="problem-form" class="grid grid-cols-1 md:grid-cols-2 gap-4" autocomplete="off">
+                        <div class="md:col-span-2 relative">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Problem Label</label>
+                            <input type="text" id="form-name" required placeholder="Start typing title (e.g., Two Sum)..." oninput="handleSearchSuggestions(this.value)"
+                                class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <div id="suggestion-box" class="hidden absolute left-0 right-0 mt-1 bg-slate-950 border border-slate-700 rounded shadow-2xl z-50 max-h-48 overflow-y-auto"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Execution Platform</label>
+                            <select id="form-platform" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:outline-none">
+                                <option>LeetCode</option>
+                                <option>GeeksForGeeks</option>
+                                <option>NeetCode</option>
+                                <option>Codeforces</option>
+                                <option>CodeStudio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Difficulty Metric</label>
+                            <select id="form-difficulty" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                                <option>Easy</option>
+                                <option>Medium</option>
+                                <option>Hard</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Core Topic</label>
+                            <input type="text" id="form-topic" required placeholder="e.g., Arrays" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Structural Pattern</label>
+                            <input type="text" id="form-pattern" required placeholder="e.g., Two Pointers" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time Complexity</label>
+                            <select id="form-time-comp-select" onchange="toggleCustomComplexity('time')" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock"></select>
+                            <input type="text" id="form-time-comp-custom" placeholder="Type custom complexity..." class="hidden mt-2 w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Space Complexity</label>
+                            <select id="form-space-comp-select" onchange="toggleCustomComplexity('space')" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock"></select>
+                            <input type="text" id="form-space-comp-custom" placeholder="Type custom complexity..." class="hidden mt-2 w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-100">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Confidence Scale</label>
+                            <div class="star-rating flex items-center space-x-1 text-slate-500" id="form-star-container">
+                                <span onclick="setFormStars(1)">★</span>
+                                <span onclick="setFormStars(2)">★</span>
+                                <span onclick="setFormStars(3)">★</span>
+                                <span onclick="setFormStars(4)">★</span>
+                                <span onclick="setFormStars(5)">★</span>
+                            </div>
+                            <input type="hidden" id="form-confidence" value="3">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Time Taken (Mins)</label>
+                            <input type="number" id="form-time" required placeholder="e.g., 25" class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Resource Reference Link</label>
+                            <input type="url" id="form-link" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 dynamic-lock">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Incremental Insight Notes</label>
+                            <textarea id="form-notes" placeholder="Add specific platform feedback notes..." class="w-full bg-slate-900 border border-slate-700 rounded p-2.5 text-slate-100 h-20 focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2 mt-2">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 text-white rounded shadow transition">Commit Entry to C++ Storage</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- DETAILS MODAL PANEL -->
+    <div id="details-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-2xl p-6 relative shadow-2xl space-y-5">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl font-bold">&times;</button>
+            <div class="border-b border-slate-700 pb-3">
+                <span id="modal-difficulty" class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"></span>
+                <h2 id="modal-name" class="text-2xl font-black text-white mt-1"></h2>
+                <p id="modal-meta" class="text-xs text-slate-400 mt-1"></p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900 p-4 rounded-lg border border-slate-700/60">
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Time Complexity</p>
+                    <p id="modal-time-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Space Complexity</p>
+                    <p id="modal-space-comp" class="text-sm font-mono text-slate-200 mt-0.5"></p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Confidence Scale</p>
+                    <div id="modal-confidence-stars" class="text-amber-400 flex items-center space-x-0.5 mt-0.5"></div>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-widest font-semibold text-slate-500">Source Anchor Link</p>
+                    <a id="modal-link" target="_blank" class="text-sm text-blue-400 hover:underline block mt-0.5">Link &rarr;</a>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Accumulated Insight Notes</h4>
+                    <div id="modal-notes" class="bg-slate-900/40 p-3 rounded border border-slate-700/40 text-sm text-slate-300 whitespace-pre-wrap font-mono text-xs"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:8080';
+        let problemsCacheList = [];
+        let timeComplexityOptions = ["O(1)", "O(log N)", "O(N)", "O(N log N)", "O(N^2)", "O(2^N)", "O(N!)"];
+        let spaceComplexityOptions = ["O(1)", "O(log N)", "O(N)", "O(N^2)"];
+
+        // Toast notification trigger system
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notification');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+            
+            if (type === 'success') {
+                toast.className = "fixed top-5 right-5 z-50 max-w-sm w-full bg-slate-800 border border-emerald-500/30 p-4 rounded-xl shadow-2xl flex items-center justify-between gap-3 transition-all duration-300";
+                icon.innerText = "✅";
+            } else {
+                toast.className = "fixed top-5 right-5 z-50 max-w-sm w-full bg-slate-800 border border-rose-500/30 p-4 rounded-xl shadow-2xl flex items-center justify-between gap-3 transition-all duration-300";
+                icon.innerText = "❌";
+            }
+            
+            msg.innerText = message;
+            toast.classList.remove('hidden', 'translate-y-[-20px]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => { dismissToast(); }, 3500);
+        }
+
+        function dismissToast() {
+            const toast = document.getElementById('toast-notification');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-[-20px]', 'opacity-0');
+            setTimeout(() => { toast.classList.add('hidden'); }, 300);
+        }
+
+        function checkPortalAuthentication() {
+            const token = localStorage.getItem('preppilot_token');
+            const name = localStorage.getItem('preppilot_username');
+            if (token) {
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                document.getElementById('user-greeting').innerText = `| Pilot: ${name}`;
+                showPage('dashboard-page');
+            } else {
+                document.getElementById('auth-container').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+        }
+
+        function toggleAuthTab(showLogin) {
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('login-box').classList.toggle('hidden', !showLogin);
+            document.getElementById('register-box').classList.toggle('hidden', showLogin);
+            
+            if (showLogin) {
+                document.getElementById('tab-login').className = "w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-blue-500 text-white transition focus:outline-none";
+                document.getElementById('tab-register').className = "w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition focus:outline-none";
+            } else {
+                document.getElementById('tab-login').className = "w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition focus:outline-none";
+                document.getElementById('tab-register').className = "w-1/2 pb-3 text-center font-bold text-sm border-b-2 border-blue-500 text-white transition focus:outline-none";
+            }
+        }
+
+        function displayAuthError(msg) {
+            const banner = document.getElementById('auth-error');
+            banner.innerText = msg;
+            banner.classList.remove('hidden');
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('auth-error').classList.add('hidden');
+            
+            try {
+                const res = await fetch(`${BACKEND_URL}/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: document.getElementById('login-email').value,
+                        password: document.getElementById('login-password').value
+                    })
+                });
+                
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('preppilot_token', data.token);
+                    localStorage.setItem('preppilot_username', data.name);
+                    showToast('Successfully authenticated workspace entry!', 'success');
+                    setTimeout(() => { checkPortalAuthentication(); }, 800);
+                } else {
+                    displayAuthError(data.error || "Authentication verification failure.");
+                    showToast(data.error || "Login failed.", 'error');
+                }
+            } catch (err) { displayAuthError("Cannot establish connection to C++ server module."); }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('auth-error').classList.add('hidden');
+            
+            try {
+                const res = await fetch(`${BACKEND_URL}/register`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        name: document.getElementById('reg-name').value,
+                        email: document.getElementById('reg-email').value,
+                        password: document.getElementById('reg-password').value
+                    })
+                });
+                
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Successfully signed in! Opening workspace panel...', 'success');
+                    localStorage.setItem('preppilot_token', data.token);
+                    localStorage.setItem('preppilot_username', data.name);
+                    setTimeout(() => { checkPortalAuthentication(); }, 800);
+                } else {
+                    displayAuthError(data.error || "Sign in profile mapping failure.");
+                    showToast(data.error || "Registration failed.", 'error');
+                }
+            } catch (err) { displayAuthError("Cannot establish connection to C++ server module."); }
+        });
+
+        function togglePasswordVisibility(fieldId, toggleTextId) {
+            const input = document.getElementById(fieldId);
+            const span = document.getElementById(toggleTextId);
+            if (input.type === 'password') { input.type = 'text'; span.innerText = '🙈'; } 
+            else { input.type = 'password'; span.innerText = '👁️'; }
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+            showToast('Logged out successfully.', 'success');
+            checkPortalAuthentication();
+        }
+
+        function getStarString(rating) {
+            let stars = '';
+            const roundRating = Math.round(rating);
+            for(let i = 1; i <= 5; i++) { stars += i <= roundRating ? '★' : '☆'; }
+            return stars;
+        }
+
+        function setFormStars(rating) {
+            document.getElementById('form-confidence').value = rating;
+            const elements = document.getElementById('form-star-container').children;
+            for(let i = 0; i < 5; i++) { elements[i].className = (i < rating) ? "text-xl text-amber-400" : "text-xl text-slate-600"; }
+        }
+
+        function showPage(pageId) {
+            document.getElementById('dashboard-page').classList.add('hidden');
+            document.getElementById('log-page').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+            if (pageId === 'dashboard-page') { fetchStats(); fetchProblems(); }
+            if (pageId === 'log-page') { resetLoggingFormState(); }
+        }
+
+        async function fetchStats() {
+            const res = await fetch(`${BACKEND_URL}/stats`);
+            const data = await res.json();
+            document.getElementById('stat-total').innerText = data.total_solved;
+            document.getElementById('stat-easy').innerText = data.easy;
+            document.getElementById('stat-medium').innerText = data.medium;
+            document.getElementById('stat-hard').innerText = data.hard;
+            document.getElementById('stat-confidence-stars').innerText = getStarString(data.avg_confidence);
+        }
+
+        async function fetchProblems() {
+            const res = await fetch(`${BACKEND_URL}/problems`);
+            problemsCacheList = await res.json();
+            const tbody = document.getElementById('problems-table-body');
+            tbody.innerHTML = '';
+
+            problemsCacheList.forEach(prob => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-slate-700/40 hover:bg-slate-700/20 transition';
+                const platforms = prob.platform ? `<span class="bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-xs font-mono text-slate-300">${prob.platform}</span>` : `<span class="text-slate-500 italic text-xs">Unsolved</span>`;
+
+                row.innerHTML = `
+                    <td class="py-3.5 pl-2 font-bold text-white">${prob.name}</td>
+                    <td class="py-3.5">${platforms}</td>
+                    <td class="py-3.5 font-semibold text-xs ${prob.difficulty === 'Easy' ? 'text-emerald-400' : prob.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400'}">${prob.difficulty}</td>
+                    <td class="py-3.5 text-xs text-slate-400"><span class="bg-slate-950 px-2 py-0.5 rounded">${prob.topic}</span></td>
+                    <td class="py-3.5 text-xs text-slate-400">${prob.pattern}</td>
+                    <td class="py-3.5 text-right pr-2">
+                        <button onclick="viewDetailsModal(${prob.id})" class="bg-slate-700 hover:bg-blue-600 px-2.5 py-1 rounded text-xs text-slate-200 transition">Inspect &rarr;</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function handleSearchSuggestions(val) {
+            const box = document.getElementById('suggestion-box');
+            if (!val) { box.innerHTML = ''; box.classList.add('hidden'); return; }
+            const matches = problemsCacheList.filter(p => p.name.toLowerCase().includes(val.toLowerCase()));
+            if (matches.length === 0) { box.innerHTML = ''; box.classList.add('hidden'); unlockFormFields(); return; }
+            box.innerHTML = ''; box.classList.remove('hidden');
+
+            matches.forEach(match => {
+                const item = document.createElement('div');
+                item.className = 'px-4 py-2 hover:bg-slate-800 cursor-pointer text-sm text-white flex justify-between';
+                item.innerHTML = `<span>${match.name}</span><span class="text-xs text-slate-500 uppercase">${match.topic}</span>`;
+                item.onclick = () => selectAutocompleteSuggestion(match);
+                box.appendChild(item);
+            });
+        }
+
+        function selectAutocompleteSuggestion(problem) {
+            document.getElementById('form-name').value = problem.name;
+            document.getElementById('suggestion-box').classList.add('hidden');
+            document.getElementById('form-difficulty').value = problem.difficulty;
+            document.getElementById('form-topic').value = problem.topic;
+            document.getElementById('form-pattern').value = problem.pattern;
+            document.getElementById('form-link').value = problem.link;
+            syncComplexityDropdownState('time', problem.time_comp);
+            syncComplexityDropdownState('space', problem.space_comp);
+            document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = true);
+        }
+
+        function unlockFormFields() { document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = false); }
+
+        function populateDropdownOptions(type, optionsArray, activeValue = "") {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            select.innerHTML = '';
+            optionsArray.forEach(opt => {
+                const el = document.createElement('option'); el.value = opt; el.innerText = opt; select.appendChild(el);
+            });
+            const otherOpt = document.createElement('option'); otherOpt.value = "Other"; otherOpt.innerText = "Other..."; select.appendChild(otherOpt);
+            if (activeValue) {
+                if (optionsArray.includes(activeValue)) { select.value = activeValue; } 
+                else { select.value = "Other"; const customInput = document.getElementById(`form-${type}-comp-custom`); customInput.classList.remove('hidden'); customInput.value = activeValue; }
+            }
+        }
+
+        function syncComplexityDropdownState(type, value) {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            const customInput = document.getElementById(`form-${type}-comp-custom`);
+            const optionsArray = type === 'time' ? timeComplexityOptions : spaceComplexityOptions;
+            if (!value) { select.value = optionsArray[0]; customInput.classList.add('hidden'); return; }
+            populateDropdownOptions(type, optionsArray, value);
+        }
+
+        function toggleCustomComplexity(type) {
+            const select = document.getElementById(`form-${type}-comp-select`);
+            const customInput = document.getElementById(`form-${type}-comp-custom`);
+            if (select.value === 'Other') { customInput.classList.remove('hidden'); customInput.required = true; } 
+            else { customInput.classList.add('hidden'); customInput.required = false; }
+        }
+
+        function resetLoggingFormState() {
+            document.getElementById('problem-form').reset();
+            unlockFormFields();
+            setFormStars(3);
+            document.getElementById('form-time-comp-custom').classList.add('hidden');
+            document.getElementById('form-space-comp-custom').classList.add('hidden');
+            populateDropdownOptions('time', timeComplexityOptions);
+            populateDropdownOptions('space', spaceComplexityOptions);
+        }
+
+        function viewDetailsModal(id) {
+            const problem = problemsCacheList.find(p => p.id === id);
+            if (!problem) return;
+            const badge = document.getElementById('modal-difficulty');
+            badge.innerText = problem.difficulty;
+            badge.className = `px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${problem.difficulty === 'Easy' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : problem.difficulty === 'Medium' ? 'bg-amber-950 text-amber-400 border border-amber-800' : 'bg-rose-950 text-rose-400 border border-rose-800'}`;
+
+            document.getElementById('modal-name').innerText = problem.name;
+            document.getElementById('modal-meta').innerText = `Completed Platforms: ${problem.platform || 'None'} | Topic: ${problem.topic} | Pattern: ${problem.pattern}`;
+            document.getElementById('modal-time-comp').innerText = problem.time_comp || 'O(N)';
+            document.getElementById('modal-space-comp').innerText = problem.space_comp || 'O(1)';
+            document.getElementById('modal-confidence-stars').innerText = getStarString(problem.confidence);
+            
+            const linkTag = document.getElementById('modal-link');
+            if (problem.link) { linkTag.href = problem.link; linkTag.style.display = 'block'; } else { linkTag.style.display = 'none'; }
+            document.getElementById('modal-notes').innerText = problem.notes || 'No notes tracked.';
+            document.getElementById('details-modal').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('details-modal').classList.add('hidden'); }
+
+        document.getElementById('problem-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let timeCompVal = document.getElementById('form-time-comp-select').value;
+            if (timeCompVal === 'Other') {
+                timeCompVal = document.getElementById('form-time-comp-custom').value;
+                if (!timeComplexityOptions.includes(timeCompVal)) timeComplexityOptions.push(timeCompVal);
+            }
+            let spaceCompVal = document.getElementById('form-space-comp-select').value;
+            if (spaceCompVal === 'Other') {
+                spaceCompVal = document.getElementById('form-space-comp-custom').value;
+                if (!spaceComplexityOptions.includes(spaceCompVal)) spaceComplexityOptions.push(spaceCompVal);
+            }
+
+            const payload = {
+                name: document.getElementById('form-name').value,
+                platform: document.getElementById('form-platform').value,
+                difficulty: document.getElementById('form-difficulty').value,
+                topic: document.getElementById('form-topic').value,
+                pattern: document.getElementById('form-pattern').value,
+                time_comp: timeCompVal,
+                space_comp: spaceCompVal,
+                confidence: document.getElementById('form-confidence').value,
+                time_taken: document.getElementById('form-time').value,
+                link: document.getElementById('form-link').value,
+                notes: document.getElementById('form-notes').value
+            };
+
+            document.querySelectorAll('.dynamic-lock').forEach(el => el.disabled = false);
+            const response = await fetch(`${BACKEND_URL}/problems`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) { 
+                showToast('Progress entry successfully tracked to C++ core!', 'success'); 
+                setTimeout(() => { showPage('dashboard-page'); }, 800); 
+            }
+        });
+
+        checkPortalAuthentication();
+    </script>
+</body>
+</html>
